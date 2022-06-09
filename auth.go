@@ -123,23 +123,23 @@ func GetTLSConfig(tlsConfig *TLSConfig) (*tls.Config, *Xk6KafkaError) {
 		return nil, NewXk6KafkaError(noTLSConfig, "No TLS config provided.", nil)
 	}
 
-	var clientCertFile = &tlsConfig.ClientCertPem
-	if !FileExists(*clientCertFile) {
-		return nil, NewXk6KafkaError(fileNotFound, "Client certificate file not found.", nil)
-	}
+	// var clientCertFile = &tlsConfig.ClientCertPem
+	// if !FileExists(*clientCertFile) {
+	// 	return nil, NewXk6KafkaError(fileNotFound, "Client certificate file not found.", nil)
+	// }
 
-	var clientKeyFile = &tlsConfig.ClientKeyPem
-	if !FileExists(*clientKeyFile) {
-		return nil, NewXk6KafkaError(fileNotFound, "Client key file not found.", nil)
-	}
+	// var clientKeyFile = &tlsConfig.ClientKeyPem
+	// if !FileExists(*clientKeyFile) {
+	// 	return nil, NewXk6KafkaError(fileNotFound, "Client key file not found.", nil)
+	// }
 
-	var cert, err = tls.LoadX509KeyPair(*clientCertFile, *clientKeyFile)
-	if err != nil {
-		return nil, NewXk6KafkaError(
-			failedLoadX509KeyPair,
-			fmt.Sprintf("Error creating x509 keypair from client cert file \"%s\" and client key file \"%s\"", *clientCertFile, *clientKeyFile),
-			err)
-	}
+	// var cert, err = tls.LoadX509KeyPair(*clientCertFile, *clientKeyFile)
+	// if err != nil {
+	// 	return nil, NewXk6KafkaError(
+	// 		failedLoadX509KeyPair,
+	// 		fmt.Sprintf("Error creating x509 keypair from client cert file \"%s\" and client key file \"%s\"", *clientCertFile, *clientKeyFile),
+	// 		err)
+	// }
 
 	var caCertFile = &tlsConfig.ServerCaPem
 	if !FileExists(*caCertFile) {
@@ -163,7 +163,7 @@ func GetTLSConfig(tlsConfig *TLSConfig) (*tls.Config, *Xk6KafkaError) {
 	}
 
 	return &tls.Config{
-		Certificates: []tls.Certificate{cert},
+		//Certificates: []tls.Certificate{cert},
 		RootCAs:      caCertPool,
 		MinVersion:   tls.VersionTLS12,
 	}, nil
