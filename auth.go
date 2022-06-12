@@ -2,10 +2,7 @@ package kafka
 
 import (
 	"crypto/tls"
-	"crypto/x509"
 	"encoding/json"
-	"io/ioutil"
-	"log"
 	"os"
 	"time"
 
@@ -108,39 +105,40 @@ func fileExists(filename string) bool {
 }
 
 func tlsConfig(creds *Credentials) *tls.Config {
-	var clientCertFile = &creds.ClientCertPem
-	if !fileExists(*clientCertFile) {
-		ReportError(nil, "client certificate file not found")
-		return nil
-	}
+	// var clientCertFile = &creds.ClientCertPem
+	// if !fileExists(*clientCertFile) {
+	// 	ReportError(nil, "client certificate file not found")
+	// 	return nil
+	// }
 
-	var clientKeyFile = &creds.ClientKeyPem
-	if !fileExists(*clientKeyFile) {
-		ReportError(nil, "client key file not found")
-		return nil
-	}
+	// var clientKeyFile = &creds.ClientKeyPem
+	// if !fileExists(*clientKeyFile) {
+	// 	ReportError(nil, "client key file not found")
+	// 	return nil
+	// }
 
-	var cert, err = tls.LoadX509KeyPair(*clientCertFile, *clientKeyFile)
-	if err != nil {
-		log.Fatalf("Error creating x509 keypair from client cert file %s and client key file %s", *clientCertFile, *clientKeyFile)
-	}
+	// var cert, err = tls.LoadX509KeyPair(*clientCertFile, *clientKeyFile)
+	// if err != nil {
+	// 	log.Fatalf("Error creating x509 keypair from client cert file %s and client key file %s", *clientCertFile, *clientKeyFile)
+	// }
 
-	var caCertFile = &creds.ServerCaPem
-	if !fileExists(*caCertFile) {
-		ReportError(nil, "CA certificate file not found")
-		return nil
-	}
+	// var caCertFile = &creds.ServerCaPem
+	// if !fileExists(*caCertFile) {
+	// 	ReportError(nil, "CA certificate file not found")
+	// 	return nil
+	// }
 
-	caCert, err := ioutil.ReadFile(*caCertFile)
-	if err != nil {
-		log.Fatalf("Error opening cert file %s, Error: %s", *caCertFile, err)
-	}
-	caCertPool := x509.NewCertPool()
-	caCertPool.AppendCertsFromPEM(caCert)
+	// caCert, err := ioutil.ReadFile(*caCertFile)
+	// if err != nil {
+	// 	log.Fatalf("Error opening cert file %s, Error: %s", *caCertFile, err)
+	// }
+	// caCertPool := x509.NewCertPool()
+	// caCertPool.AppendCertsFromPEM(caCert)
 
 	return &tls.Config{
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      caCertPool,
+		// Certificates: []tls.Certificate{cert},
+		// RootCAs:      caCertPool,
 		MinVersion:   tls.VersionTLS12,
+		InsecureSkipVerify: true,
 	}
 }
