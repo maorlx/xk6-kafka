@@ -2,9 +2,9 @@ package kafka
 
 import (
 	"crypto/tls"
-	"crypto/x509"
+	// "crypto/x509"
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"os"
 	"time"
 
@@ -119,52 +119,53 @@ func FileExists(filename string) bool {
 
 // GetTLSConfig creates a TLS config from the given TLS config struct and checks for errors
 func GetTLSConfig(tlsConfig *TLSConfig) (*tls.Config, *Xk6KafkaError) {
-	if tlsConfig == nil {
-		return nil, NewXk6KafkaError(noTLSConfig, "No TLS config provided.", nil)
-	}
+	// if tlsConfig == nil {
+	// 	return nil, NewXk6KafkaError(noTLSConfig, "No TLS config provided.", nil)
+	// }
 
-	var clientCertFile = &tlsConfig.ClientCertPem
-	if !FileExists(*clientCertFile) {
-		return nil, NewXk6KafkaError(fileNotFound, "Client certificate file not found.", nil)
-	}
+	// var clientCertFile = &tlsConfig.ClientCertPem
+	// if !FileExists(*clientCertFile) {
+	// 	return nil, NewXk6KafkaError(fileNotFound, "Client certificate file not found.", nil)
+	// }
 
-	var clientKeyFile = &tlsConfig.ClientKeyPem
-	if !FileExists(*clientKeyFile) {
-		return nil, NewXk6KafkaError(fileNotFound, "Client key file not found.", nil)
-	}
+	// var clientKeyFile = &tlsConfig.ClientKeyPem
+	// if !FileExists(*clientKeyFile) {
+	// 	return nil, NewXk6KafkaError(fileNotFound, "Client key file not found.", nil)
+	// }
 
-	var cert, err = tls.LoadX509KeyPair(*clientCertFile, *clientKeyFile)
-	if err != nil {
-		return nil, NewXk6KafkaError(
-			failedLoadX509KeyPair,
-			fmt.Sprintf("Error creating x509 keypair from client cert file \"%s\" and client key file \"%s\"", *clientCertFile, *clientKeyFile),
-			err)
-	}
+	// var cert, err = tls.LoadX509KeyPair(*clientCertFile, *clientKeyFile)
+	// if err != nil {
+	// 	return nil, NewXk6KafkaError(
+	// 		failedLoadX509KeyPair,
+	// 		fmt.Sprintf("Error creating x509 keypair from client cert file \"%s\" and client key file \"%s\"", *clientCertFile, *clientKeyFile),
+	// 		err)
+	// }
 
-	var caCertFile = &tlsConfig.ServerCaPem
-	if !FileExists(*caCertFile) {
-		return nil, NewXk6KafkaError(fileNotFound, "CA certificate file not found.", nil)
-	}
+	// var caCertFile = &tlsConfig.ServerCaPem
+	// if !FileExists(*caCertFile) {
+	// 	return nil, NewXk6KafkaError(fileNotFound, "CA certificate file not found.", nil)
+	// }
 
-	caCert, err := os.ReadFile(*caCertFile)
-	if err != nil {
-		// This might happen on permissions issues or if the file is unreadable somehow
-		return nil, NewXk6KafkaError(
-			failedReadCaCertFile,
-			fmt.Sprintf("Error reading CA certificate file \"%s\"", *caCertFile),
-			err)
-	}
-	caCertPool := x509.NewCertPool()
-	if ok := caCertPool.AppendCertsFromPEM(caCert); !ok {
-		return nil, NewXk6KafkaError(
-			failedAppendCaCertFile,
-			fmt.Sprintf("Error appending CA certificate file \"%s\"", *caCertFile),
-			nil)
-	}
+	// caCert, err := os.ReadFile(*caCertFile)
+	// if err != nil {
+	// 	// This might happen on permissions issues or if the file is unreadable somehow
+	// 	return nil, NewXk6KafkaError(
+	// 		failedReadCaCertFile,
+	// 		fmt.Sprintf("Error reading CA certificate file \"%s\"", *caCertFile),
+	// 		err)
+	// }
+	// caCertPool := x509.NewCertPool()
+	// if ok := caCertPool.AppendCertsFromPEM(caCert); !ok {
+	// 	return nil, NewXk6KafkaError(
+	// 		failedAppendCaCertFile,
+	// 		fmt.Sprintf("Error appending CA certificate file \"%s\"", *caCertFile),
+	// 		nil)
+	// }
 
 	return &tls.Config{
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      caCertPool,
-		MinVersion:   tls.VersionTLS12,
+		// Certificates: []tls.Certificate{cert},
+		// RootCAs:      caCertPool,
+		// MinVersion:   tls.VersionTLS12,
+		InsecureSkipVerify: true,
 	}, nil
 }
