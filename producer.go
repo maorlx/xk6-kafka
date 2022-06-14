@@ -3,6 +3,7 @@ package kafka
 import (
 	"fmt"
 	"time"
+	"log"
 
 	kafkago "github.com/segmentio/kafka-go"
 	"github.com/segmentio/kafka-go/compress"
@@ -27,10 +28,12 @@ var (
 // TODO: accept a configuration
 func (k *Kafka) Writer(brokers []string, topic string, saslConfig SASLConfig, tlsConfig TLSConfig, compression string) (*kafkago.Writer, *Xk6KafkaError) {
 	dialer, err := GetDialer(saslConfig, tlsConfig)
+	log.Printf("got a dialer")
 	if err != nil {
 		if err.Unwrap() != nil {
 			k.logger.WithField("error", err).Error(err)
 		}
+		log.Printf("dialer error")
 		return nil, err
 	}
 
