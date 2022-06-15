@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -45,15 +46,16 @@ type TLSConfig struct {
 // GetDialer creates a kafka dialer from the given auth string or an unauthenticated dialer if the auth string is empty
 func GetDialer(saslConfig SASLConfig, tlsConfig TLSConfig) (*kafkago.Dialer, *Xk6KafkaError) {
 	logger := logrus.New()
+	logger.Info("starts dialer")
 	// Create a unauthenticated dialer with no TLS
 	dialer := &kafkago.Dialer{
 		Timeout:   10 * time.Second,
 		DualStack: false,
 	}
-
 	// Create a SASL-authenticated dialer with no TLS
 	saslMechanism, err := GetSASLMechanism(saslConfig)
 	if err != nil {
+		log.Printf("sasl error")
 		return nil, err
 	}
 	if saslMechanism != nil {
@@ -64,6 +66,7 @@ func GetDialer(saslConfig SASLConfig, tlsConfig TLSConfig) (*kafkago.Dialer, *Xk
 	// Create a TLS dialer, either with or without SASL authentication
 	tlsObject, err := GetTLSConfig(tlsConfig)
 	if err != nil {
+		log.Printf("got a tls conf err")
 		logger.WithField("error", err).Info("Cannot process TLS config")
 	}
 	if tlsObject == nil && saslConfig.Algorithm == SASL_SSL {
@@ -72,7 +75,7 @@ func GetDialer(saslConfig SASLConfig, tlsConfig TLSConfig) (*kafkago.Dialer, *Xk
 	}
 	dialer.TLS = tlsObject
 	dialer.DualStack = (tlsObject != nil)
-
+	log.Printf("got a dialer ?")
 	return dialer, nil
 }
 
@@ -86,6 +89,7 @@ func GetSASLMechanism(saslConfig SASLConfig) (sasl.Mechanism, *Xk6KafkaError) {
 	case None:
 		return nil, nil
 	case SASL_Plain, SASL_SSL:
+		log.Printf("init sasl mechanism")
 		mechanism := plain.Mechanism{
 			Username: saslConfig.Username,
 			Password: saslConfig.Password,
